@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   ara-backend:
     image: ghcr.io/${IMAGE_OWNER}/ara-backend:latest
