@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — ARA</title>
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0a0a;--surface:#141414;--surface-2:#222222;--border:#363636;--text:#ecfdf5;--muted:#6b8f78;--primary:#16a34a;--primary-h:#15803d;--danger:#ef4444;--success:#4ade80}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:2rem 1rem}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0,rgba(22,163,74,.12),transparent);pointer-events:none}
+    .auth-box{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;position:relative}
+    .auth-logo{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem;text-decoration:none}
+    .logo-chip{background:var(--primary);color:#fff;font-weight:800;font-size:.95rem;padding:.3rem .7rem;border-radius:7px}
+    .auth-logo span{font-weight:600;color:var(--muted);font-size:.9rem}
+    h1{font-size:1.5rem;font-weight:700;margin-bottom:.4rem}
+    .subtitle{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+    .form-group{margin-bottom:1.1rem}
+    label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.4rem}
+    input{width:100%;background:#0a0a0a;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.65rem .9rem;font-size:.9rem;font-family:inherit;transition:.2s}
+    input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,163,74,.2)}
+    input::placeholder{color:var(--surface-2)}
+    .forgot{font-size:.8rem;color:var(--primary);text-decoration:none;float:right;margin-top:.25rem}
+    .forgot:hover{text-decoration:underline}
+    .btn{display:block;width:100%;padding:.7rem;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;text-align:center;transition:.2s;font-family:inherit;margin-top:1.5rem}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-h)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0;color:var(--muted);font-size:.8rem}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .footer-link{text-align:center;font-size:.85rem;color:var(--muted);margin-top:1.25rem}
+    .footer-link a{color:var(--primary);text-decoration:none;font-weight:500}
+    .footer-link a:hover{text-decoration:underline}
+    .error-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none}
+    .error-msg.show{display:block}
+  </style>
+</head>
+<body>
+  <div class="auth-box">
+    <a href="/" class="auth-logo">
+      <div class="logo-chip">ARA</div>
+      <span>Asset Risk Assurance</span>
+    </a>
+
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to your account to continue</p>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="you@organisation.com" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">
+          Password
+          <a href="/pages/forgot-password.html" class="forgot">Forgot password?</a>
+        </label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit-btn">Sign In</button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <p class="footer-link">Don't have an account? <a href="/pages/register.html">Create one</a></p>
+    <p class="footer-link" style="margin-top:.5rem"><a href="/">Back to home</a></p>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    auth.redirectIfAuthenticated('/app.html');
+
+    const form    = document.getElementById('login-form');
+    const btn     = document.getElementById('submit-btn');
+    const errMsg  = document.getElementById('error-msg');
+
+    function showError(msg) {
+      errMsg.textContent = msg;
+      errMsg.classList.add('show');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errMsg.classList.remove('show');
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || !password) { showError('Please fill in all fields.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+      try {
+        await auth.login(email, password);
+        window.location.replace('/app.html');
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

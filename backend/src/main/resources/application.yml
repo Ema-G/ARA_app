@@ -1,0 +1,63 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ara-backend
+  datasource:
+    url: jdbc:h2:mem:aradb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+ara:
+  jwt:
+    secret: ${JWT_SECRET:YXJhU2VjcmV0S2V5TXVzdEJlQXRMZWFzdDI1NkJpdHNMb25nRm9ySFMyNTZQcm9kdWN0aW9uQ2hhbmdlVGhpcw==}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  mail:
+    results-recipient: ema.georgiev@gmail.com
+    from: ${MAIL_FROM:noreply@ara-app.com}
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
+  vapid:
+    public-key: ${VAPID_PUBLIC_KEY:}
+    private-key: ${VAPID_PRIVATE_KEY:}
+    subject: ${VAPID_SUBJECT:mailto:ema.georgiev@gmail.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.example.ara: ${LOG_LEVEL:INFO}

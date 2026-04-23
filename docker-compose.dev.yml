@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  ara-backend:
+    image: ghcr.io/${IMAGE_OWNER}/ara-backend:develop
+    container_name: ara-backend-dev
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_JPA_SHOW_SQL=true
+      - LOG_LEVEL=DEBUG
+    networks:
+      - ara-dev
+
+  ara-frontend:
+    image: ghcr.io/${IMAGE_OWNER}/ara-frontend:develop
+    container_name: ara-frontend-dev
+    ports:
+      - "3000:80"
+    depends_on:
+      - ara-backend
+    networks:
+      - ara-dev
+
+networks:
+  ara-dev:
+    driver: bridge
