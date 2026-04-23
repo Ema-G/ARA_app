@@ -14,7 +14,8 @@ backend/.mvn/
 # Docker
 .docker/
 
-# Env
+# Env — never commit secrets
+.env
 .env.local
 .env.*.local
 
